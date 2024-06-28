@@ -4,8 +4,6 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import styles from './ImageGallery.module.css';
 
 const ImageGallery = ({ images }) => {
-  const [filteredImages, setFilteredImages] = useState(images);
-
   useEffect(() => {
     const newFilteredImages = images.filter(image => image.someCondition);
     setFilteredImages(newFilteredImages);
