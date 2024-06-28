@@ -1,51 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../Modal/Modal';
 import styles from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ image }) => {
-  const { webformatURL, largeImageURL, tags } = image;
-  const [showModal, setShowModal] = useState(false);
+class ImageGalleryItem extends Component {
+  static propTypes = {
+    image: PropTypes.shape({
+      webformatURL: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string,
+    }).isRequired,
+  };
 
-  useEffect(() => {
-    const handleGalleryPointerEvents = () => {
+  state = {
+    showModal: false,
+  };
+
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.showModal !== this.state.showModal) {
       const gallery = document.querySelector('.js-gallery');
       if (!gallery) return;
 
-      gallery.style.pointerEvents = showModal ? 'none' : 'auto';
-    };
-
-    handleGalleryPointerEvents();
-
-    // Cleanup function to reset pointer events on unmount or state change
-    return () => {
-      const gallery = document.querySelector('.js-gallery');
-      if (gallery) {
+      if (this.state.showModal) {
+        console.log('Modal is noe shown');
+        gallery.style.pointerEvents = 'none';
+      } else {
+        console.log('Modal is now hidden');
         gallery.style.pointerEvents = 'auto';
       }
-    };
-  }, [showModal]);
+    }
+  }
 
-  const toggleModal = () => {
-    setShowModal(prevShowModal => !prevShowModal);
+  toggleModal = () => {
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
   };
 
-  return (
-    <li className={styles.galleryItem} onClick={toggleModal}>
-      <img src={webformatURL} alt={tags} />
-      {showModal && (
-        <Modal image={largeImageURL} tags={tags} onClose={toggleModal} />
-      )}
-    </li>
-  );
-};
+  render() {
+    const { webformatURL, largeImageURL, tags } = this.props.image;
+    const { showModal } = this.state;
 
-ImageGalleryItem.propTypes = {
-  image: PropTypes.shape({
-    webformatURL: PropTypes.string.isRequired,
-    largeImageURL: PropTypes.string.isRequired,
-    tags: PropTypes.string,
-  }).isRequired,
-};
+    return (
+      <li className={styles.galleryItem} onClick={this.toggleModal}>
+        <img src={webformatURL} alt={tags} />
+        {showModal && (
+          <Modal image={largeImageURL} tags={tags} onClose={this.toggleModal} />
+        )}
+      </li>
+    );
+  }
+}
 
 export default ImageGalleryItem;

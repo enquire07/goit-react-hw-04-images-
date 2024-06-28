@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 
-// import React, { Component } from 'react';
+//import React, { Component } from 'react';
 import SearchBar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import { getAPI } from 'pixabay-api';
 import styles from './App.module.css';
-import toast, { Toaster } from 'react-hot-toast';
+import  toast{ Toaster } from 'react-hot-toast';
 
-//
 const App = () => {
   const [images, setImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +16,36 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
+
+  // const handleSearchSubmit = async query => {
+  //   setSearchQuery(query);
+  //   setCurrentPage(1);
+  //   setImages([]);
+  //   await fetchImages(query, 1);
+  // };
+
+  // const fetchImages = async (query, page) => {
+  //   setIsLoading(true);
+  //   setIsError(false);
+
+  //   try {
+  //     const response = await getAPI(query, page);
+  //     const { totalHits, hits } = response;
+
+  //     setImages(prevImages => (page === 1 ? hits : [...prevImages, ...hits]));
+  //     setIsEnd(hits.length < 12 || page * 12 >= totalHits);
+  //   } catch (error) {
+  //     setIsError(true);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const handleLoadMore = () => {
+  //   const nextPage = currentPage + 1;
+  //   setCurrentPage(nextPage);
+  //   fetchImages(searchQuery, nextPage);
+  // };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -30,14 +59,14 @@ const App = () => {
         setImages(prevImages =>
           currentPage === 1 ? hits : [...prevImages, ...hits]
         );
-        setIsEnd(prevImages => prevImages.length + hits.length >= totalHits);
+        setIsEnd(images.length + hits.length >= totalHits);
 
         if (hits.length === 0) {
-          toast.error("This didn't work.");
+          toast.error('No images found.');
         }
       } catch (error) {
         setIsError(true);
-        toast(`An error occurred while fetching data: ${error}`);
+        toast(`Error fetching data: ${error}`);
       } finally {
         setIsLoading(false);
       }
@@ -49,41 +78,82 @@ const App = () => {
   }, [searchQuery, currentPage]);
 
   const handleSearchSubmit = query => {
-    const normalizedQuery = query.trim().toLowerCase();
-    const normalizedCurrentQuery = searchQuery.toLowerCase();
-
-    if (normalizedQuery === '') {
-      toast('Hello Darkness!', {
-        icon: '👏',
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      });
-      return;
-    }
-
-    if (normalizedQuery === normalizedCurrentQuery) {
-      toast.success('Successfully toasted!');
-      return;
-    }
-
-    if (normalizedQuery !== normalizedCurrentQuery) {
-      setSearchQuery(normalizedQuery);
-      setCurrentPage(1);
-      setImages([]);
-      setIsEnd(false);
-    }
+    setSearchQuery(query);
+    setCurrentPage(1);
+    setImages([]);
+    setIsEnd(false);
   };
 
   const handleLoadMore = () => {
-    if (!isEnd) {
-      setCurrentPage(prevPage => prevPage + 1);
-    } else {
-      alert("You've reached the end of the search results");
-    }
+    setCurrentPage(prevPage => prevPage + 1);
   };
+
+  // useEffect(() => {
+  //   const fetchImages = async () => {
+  //     setIsLoading(true);
+  //     setIsError(false);
+
+  //     try {
+  //       const response = await getAPI(searchQuery, currentPage);
+  //       const { totalHits, hits } = response;
+
+  //       setImages(prevImages =>
+  //         currentPage === 1 ? hits : [...prevImages, ...hits]
+  //       );
+  //       setIsEnd(prevImages => prevImages.length + hits.length >= totalHits);
+
+  //       if (hits.length === 0) {
+  //         toast.error("This didn't work.");
+  //       }
+  //     } catch (error) {
+  //       setIsError(true);
+  //       toast(`An error occurred while fetching data: ${error}`);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   if (searchQuery) {
+  //     fetchImages();
+  //   }
+  // }, [searchQuery, currentPage]);
+
+  // const handleSearchSubmit = query => {
+  //   const normalizedQuery = query.trim().toLowerCase();
+  //   const normalizedCurrentQuery = searchQuery.toLowerCase();
+
+  //   if (normalizedQuery === '') {
+  //     toast('Hello Darkness!', {
+  //       icon: '👏',
+  //       style: {
+  //         borderRadius: '10px',
+  //         background: '#333',
+  //         color: '#fff',
+  //       },
+  //     });
+  //     return;
+  //   }
+
+  //   if (normalizedQuery === normalizedCurrentQuery) {
+  //     toast.success('Successfully toasted!');
+  //     return;
+  //   }
+
+  //   if (normalizedQuery !== normalizedCurrentQuery) {
+  //     setSearchQuery(normalizedQuery);
+  //     setCurrentPage(1);
+  //     setImages([]);
+  //     setIsEnd(false);
+  //   }
+  // };
+
+  // const handleLoadMore = () => {
+  //   if (!isEnd) {
+  //     setCurrentPage(prevPage => prevPage + 1);
+  //   } else {
+  //     alert("You've reached the end of the search results");
+  //   }
+  // };
 
   return (
     <div className={styles.App}>

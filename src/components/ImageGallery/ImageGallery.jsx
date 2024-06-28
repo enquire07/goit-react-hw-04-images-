@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import styles from './ImageGallery.module.css';
 
-const ImageGallery = ({ images }) => {
-  const [filteredImages, setFilteredImages] = useState(images);
+class ImageGallery extends Component {
+  static propTypes = {
+    images: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  };
 
-  useEffect(() => {
-    const newFilteredImages = images.filter(image => image.someCondition);
-    setFilteredImages(newFilteredImages);
-  }, [images]);
-  return (
-    <ul className={`${styles.gallery} js-gallery`}>
-      {filteredImages.map(image => (
-        <ImageGalleryItem key={image.id} image={image} />
-      ))}
-    </ul>
-  );
-};
-
-ImageGallery.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-    })
-  ).isRequired,
-};
+  render() {
+    const { images } = this.props;
+    return (
+      <ul className={`${styles.gallery} js-gallery`}>
+        {images.map(image => (
+          <ImageGalleryItem key={image.id} image={image} />
+        ))}
+      </ul>
+    );
+  }
+}
 
 export default ImageGallery;
